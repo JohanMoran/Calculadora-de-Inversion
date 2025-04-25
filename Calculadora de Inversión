@@ -433,6 +433,11 @@
     }
 
     function descargarPDF() {
+      if (datosGrafica.length === 0) {
+        alert("Primero calcula una inversión.");
+        return;
+      }
+
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF({
         orientation: 'portrait',
@@ -499,16 +504,23 @@
           4: { cellWidth: 25 }
         }
       });
-      
-      const canvas = document.getElementById('grafica');
-      const imgData = canvas.toDataURL('image/png');
-      doc.addImage(imgData, 'PNG', 20, doc.lastAutoTable.finalY + 10, 170, 80);
-      
-      doc.setFontSize(10);
-      doc.setTextColor(100);
-      doc.text("© Calculadora de Inversión - " + new Date().toLocaleDateString(), 105, 285, { align: 'center' });
-      
-      doc.save('reporte_inversion.pdf');
+
+      // Solución clave: Actualizar gráfico y añadir retraso
+      if (chart) {
+        chart.update();
+      }
+
+      setTimeout(() => {
+        const canvas = document.getElementById('grafica');
+        const imgData = canvas.toDataURL('image/png');
+        doc.addImage(imgData, 'PNG', 20, doc.lastAutoTable.finalY + 10, 170, 80);
+        
+        doc.setFontSize(10);
+        doc.setTextColor(100);
+        doc.text("© Calculadora de Inversión - " + new Date().toLocaleDateString(), 105, 285, { align: 'center' });
+        
+        doc.save('reporte_inversion.pdf');
+      }, 300); // Retraso de 300ms para renderizado
     }
 
     function descargarCSV() {
