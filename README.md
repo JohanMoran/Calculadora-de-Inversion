@@ -47,10 +47,10 @@
       min-height: 150px;
     }
     #portada img {
-  width: 100%;
-  object-fit: cover; /* Cubre todo el espacio sin deformarse */
-  border-radius: 8px;
-}
+      width: 100%;
+      object-fit: cover;
+      border-radius: 8px;
+    }
     label {
       margin-top: 15px;
       display: block;
@@ -197,10 +197,10 @@
 </head>
 <body>
   <div id="portada">
-  <img src="https://raw.githubusercontent.com/JohanMoran/Proyeccion-de-Inversiones/main/ROBPAIERO_TUASESORDECONFIANZA.PNG" 
-       alt="Calculadora de Inversión"
-       style="width: 100%; max-width: 900px; height: auto; border-radius: 8px;">
-</div>
+    <img src="https://raw.githubusercontent.com/JohanMoran/Proyeccion-de-Inversiones/main/ROBPAIERO_TUASESORDECONFIANZA.PNG" 
+         alt="Calculadora de Inversión"
+         style="width: 100%; max-width: 900px; height: auto; border-radius: 8px;">
+  </div>
   <button class="dark-mode-btn" onclick="toggleDarkMode()">🌙 Modo Oscuro</button>
 
   <label>MONTO INICIAL:</label>
@@ -351,8 +351,23 @@
       `;
 
       if (cumpleObjetivo) {
+        const años = Math.floor(meses / 12);
+        const mesesRestantes = meses % 12;
+        
+        let textoMeses = "";
+        if (años > 0) {
+          textoMeses += `${años} ${años === 1 ? 'año' : 'años'}`;
+        }
+        if (mesesRestantes > 0) {
+          if (años > 0) textoMeses += " y ";
+          textoMeses += `${mesesRestantes} ${mesesRestantes === 1 ? 'mes' : 'meses'}`;
+        }
+        if (meses < 12) {
+          textoMeses = `${meses} ${meses === 1 ? 'mes' : 'meses'}`;
+        }
+
         document.getElementById('resumenFinal').innerHTML = `
-          🎉 <strong>¡Objetivo alcanzado en ${meses} meses!</strong>
+          🎉 <strong>¡Objetivo de ${formatCurrency(capitalObjetivo)} alcanzado en ${textoMeses}!</strong>
         `;
       }
 
