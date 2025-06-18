@@ -206,6 +206,26 @@
       color: #e0e0e0;
       border: 1px solid #555;
     }
+
+    /* Ajustes específicos para móvil */
+    @media (max-width: 768px) {
+      .input-container {
+        flex-direction: column;
+        gap: 5px;
+      }
+      .input-container input, 
+      .input-container select {
+        width: 100% !important;
+        font-size: 16px;
+      }
+      .input-container span {
+        padding-left: 0;
+        font-size: 14px;
+      }
+      #portada {
+        min-height: 100px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -353,7 +373,6 @@
         totalInteres += interes;
         capital += interes;
         
-        // Determinar si este mes corresponde a una aportación
         const esAportacion = (i - 1) % periodicidad === 0;
         if (esAportacion) {
           capital += aportacion;
@@ -363,7 +382,6 @@
         const fecha = new Date(fechaInicio);
         fecha.setMonth(fecha.getMonth() + i);
 
-        // Mostrar todas las filas con $0.00 en aportación cuando no corresponde
         tabla.innerHTML += `
           <tr>
             <td>${i}</td>
@@ -492,7 +510,6 @@
         format: 'a4'
       });
       
-      // --- Título y encabezado ---
       doc.setFontSize(20);
       doc.setTextColor(43, 103, 119);
       doc.setFont('helvetica', 'bold');
@@ -501,7 +518,6 @@
       doc.setLineWidth(0.5);
       doc.line(20, 20, 190, 20);
       
-      // --- Datos de la inversión ---
       doc.setFontSize(12);
       doc.setTextColor(0, 0, 0);
       doc.setFont('helvetica', 'normal');
@@ -528,7 +544,6 @@
       doc.text(`Tasa anual: ${tasa}% | Plazo: ${plazo} meses`, 25, 44);
       doc.text(`Aportación ${periodicidadTexto}: ${formatCurrency(aportacion)}`, 25, 51);
       
-      // --- Resultados finales ---
       doc.setFillColor(230, 245, 230);
       doc.rect(20, 60, 170, 20, 'F');
       doc.text("Resultados finales", 25, 65);
@@ -538,21 +553,14 @@
       doc.text(`Total acumulado: ${formatCurrency(capital)}`, 25, 79);
       doc.setFont('helvetica', 'normal');
 
-      // --- Gráfico (antes que la tabla) ---
-      // Asegurar que el gráfico esté actualizado
-      if (chart) {
-        chart.update();
-      }
-
       setTimeout(() => {
         const canvas = document.getElementById('grafica');
-        const imgData = canvas.toDataURL('image/png', 1.0); // Calidad al 100%
-        doc.addImage(imgData, 'PNG', 20, 85, 170, 80); // Posición después de los resultados (85 en Y)
+        const imgData = canvas.toDataURL('image/png', 1.0);
+        doc.addImage(imgData, 'PNG', 20, 85, 170, 80);
 
-        // --- Tabla (después del gráfico) ---
         doc.autoTable({
           html: '#tablaResultados',
-          startY: 170, // Ajustado para que esté después del gráfico
+          startY: 170,
           theme: 'grid',
           headStyles: {
             fillColor: [43, 103, 119],
@@ -571,13 +579,12 @@
           }
         });
 
-        // Pie de página
         doc.setFontSize(10);
         doc.setTextColor(100);
         doc.text("© Calculadora de Inversión - " + new Date().toLocaleDateString(), 105, 285, { align: 'center' });
         
         doc.save('reporte_inversion.pdf');
-      }, 300); // Retraso para renderizar el gráfico
+      }, 300);
     }
 
     function descargarCSV() {
