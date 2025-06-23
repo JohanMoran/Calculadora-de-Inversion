@@ -236,11 +236,11 @@
   </div>
   <button class="dark-mode-btn" onclick="toggleDarkMode()">🌙 Modo Oscuro</button>
 
-  <label>MONTO INICIAL:</label>
-  <div class="input-container">
-    <input type="number" id="capitalInicial" />
-    <span>¿Con qué cantidad cuentas en este momento? ¿Con cuánto empezarás tu inversión?</span>
-  </div>
+ <label>MONTO INICIAL:</label>
+<div class="input-container">
+  <input type="text" id="capitalInicial" oninput="formatCurrencyInput(this)" />
+  <span>¿Con qué cantidad cuentas en este momento? ¿Con cuánto empezarás tu inversión?</span>
+</div>
 
   <label>Tasa Anual (%):</label>
   <div class="input-container">
@@ -254,11 +254,11 @@
     <span>¿Cuántos años vas a realizar la inversión? ¿Cuál es tu horizonte de inversión?</span>
   </div>
 
-  <label>Aportación:</label>
-  <div class="input-container">
-    <input type="number" id="aportacion" />
-    <span>¿Cuánto puedes destinar a tu inversión periódicamente para incrementar tus rendimientos?</span>
-  </div>
+<label>Aportación:</label>
+<div class="input-container">
+  <input type="text" id="aportacion" oninput="formatCurrencyInput(this)" />
+  <span>¿Cuánto puedes destinar a tu inversión periódicamente para incrementar tus rendimientos?</span>
+</div>
 
   <label>Periodicidad de aportación:</label>
   <div class="input-container">
