@@ -2,14 +2,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Calculadora de inversión</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
   <style>
-          * === SOLUCIÓN: Oculta el título automático de GitHub Pages === */
-          .pagehead, .gh-header, .repohead, .Header { display: none !important; }
-    :root {
+      :root {
       --fondo-claro: #f4f6f8;
       --texto-claro: #333;
       --primario: #2b6777;
