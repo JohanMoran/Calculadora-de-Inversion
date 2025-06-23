@@ -14,7 +14,7 @@
       --hover: #1b4d5b;
       --tabla-head: #ddeeee;
       --boton-texto: #fff;
-      --portada: #000000;
+      --portada: #2b2929;
       --verde: #28a745;
       --verde-hover: #218838;
       --texto-grande: 16px;
