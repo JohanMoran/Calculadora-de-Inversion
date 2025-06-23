@@ -206,6 +206,10 @@
       color: #e0e0e0;
       border: 1px solid #555;
     }
+    input[type="text"] {
+      text-align: right;
+      font-family: monospace;
+    }
 
     /* Ajustes específicos para móvil */
     @media (max-width: 768px) {
@@ -236,16 +240,16 @@
   </div>
   <button class="dark-mode-btn" onclick="toggleDarkMode()">🌙 Modo Oscuro</button>
 
- <label>MONTO INICIAL:</label>
-<div class="input-container">
-  <input type="text" id="capitalInicial" oninput="formatCurrencyInput(this)" />
-  <span>¿Con qué cantidad cuentas en este momento? ¿Con cuánto empezarás tu inversión?</span>
-</div>
+  <label>MONTO INICIAL:</label>
+  <div class="input-container">
+    <input type="text" id="capitalInicial" oninput="formatCurrencyInput(this)" />
+    <span>¿Con qué cantidad cuentas en este momento? ¿Con cuánto empezarás tu inversión?</span>
+  </div>
 
   <label>Tasa Anual (%):</label>
   <div class="input-container">
     <input type="number" id="tasa" step="0.01" />
-    <span>¿Cuál es la tasa de interés anual que te está proponiendo la institución financiera? </span>
+    <span>Tasa de Interés anual, inversionistas conservadores (renta fija) 10% - 15%.</span>
   </div>
 
   <label>Plazo (en meses):</label>
@@ -254,11 +258,11 @@
     <span>¿Cuántos años vas a realizar la inversión? ¿Cuál es tu horizonte de inversión?</span>
   </div>
 
-<label>Aportación:</label>
-<div class="input-container">
-  <input type="text" id="aportacion" oninput="formatCurrencyInput(this)" />
-  <span>¿Cuánto puedes destinar a tu inversión periódicamente para incrementar tus rendimientos?</span>
-</div>
+  <label>Aportación:</label>
+  <div class="input-container">
+    <input type="text" id="aportacion" oninput="formatCurrencyInput(this)" />
+    <span>¿Cuánto puedes destinar a tu inversión periódicamente para incrementar tus rendimientos?</span>
+  </div>
 
   <label>Periodicidad de aportación:</label>
   <div class="input-container">
@@ -278,9 +282,9 @@
     <span>Fecha en que tienes pensado dar inicio a tu inversión</span>
   </div>
 
-  <label>Capital objetivo (OPCIONAL):</label>
+  <label>Capital objetivo (opcional):</label>
   <div class="input-container">
-    <input type="number" id="capitalObjetivo" placeholder="Ej: 500000" />
+    <input type="text" id="capitalObjetivo" oninput="formatCurrencyInput(this)" placeholder="Ej: 500000" />
     <span>¿Ya tienes un objetivo (ir de viaje, comprar un auto, etc.)? Elige un monto con el que alcanzarás ese objetivo</span>
   </div>
 
@@ -326,13 +330,36 @@
       }
     }
 
+    function formatCurrencyInput(input) {
+      // Eliminar todos los caracteres no numéricos excepto el punto decimal
+      let value = input.value.replace(/[^0-9.]/g, '');
+      
+      // Separar parte entera y decimal
+      let parts = value.split('.');
+      let integerPart = parts[0];
+      let decimalPart = parts.length > 1 ? '.' + parts[1] : '';
+      
+      // Formatear parte entera con comas
+      if (integerPart.length > 0) {
+        integerPart = parseInt(integerPart, 10).toLocaleString('es-MX');
+      }
+      
+      // Combinar y actualizar el valor
+      input.value = integerPart + decimalPart;
+    }
+
+    function parseCurrencyInput(value) {
+      // Convertir el valor formateado a número para los cálculos
+      return parseFloat(value.replace(/,/g, '')) || 0;
+    }
+
     function calcular() {
-      const capitalInicial = parseFloat(document.getElementById('capitalInicial').value) || 0;
+      const capitalInicial = parseCurrencyInput(document.getElementById('capitalInicial').value);
       const tasa = parseFloat(document.getElementById('tasa').value) || 0;
       const plazo = parseInt(document.getElementById('plazo').value) || 0;
-      const aportacion = parseFloat(document.getElementById('aportacion').value) || 0;
+      const aportacion = parseCurrencyInput(document.getElementById('aportacion').value);
       const periodicidad = parseInt(document.getElementById('periodicidad').value) || 1;
-      const capitalObjetivo = parseFloat(document.getElementById('capitalObjetivo').value) || null;
+      const capitalObjetivo = parseCurrencyInput(document.getElementById('capitalObjetivo').value) || null;
       const fechaInicio = new Date(document.getElementById('fechaInicio').value);
 
       if (plazo <= 0 || tasa <= 0) {
@@ -525,10 +552,10 @@
       doc.rect(20, 25, 170, 30, 'F');
       doc.text("Datos de la inversión", 25, 30);
       
-      const capitalInicial = parseFloat(document.getElementById('capitalInicial').value) || 0;
+      const capitalInicial = parseCurrencyInput(document.getElementById('capitalInicial').value);
       const tasa = parseFloat(document.getElementById('tasa').value) || 0;
       const plazo = parseInt(document.getElementById('plazo').value) || 0;
-      const aportacion = parseFloat(document.getElementById('aportacion').value) || 0;
+      const aportacion = parseCurrencyInput(document.getElementById('aportacion').value);
       const periodicidad = parseInt(document.getElementById('periodicidad').value) || 1;
       
       let periodicidadTexto = '';
@@ -598,8 +625,8 @@
       
       rows.forEach(row => {
         const cells = row.querySelectorAll('td');
-        const aportacionValue = cells[2].textContent === '$0.00' ? '0' : cells[2].textContent.replace('$','');
-        csv += `"${cells[0].textContent}","${cells[1].textContent}","${aportacionValue}","${cells[3].textContent.replace('$','')}","${cells[4].textContent.replace('$','')}"\n`;
+        const aportacionValue = cells[2].textContent === '$0.00' ? '0' : parseCurrencyInput(cells[2].textContent);
+        csv += `"${cells[0].textContent}","${cells[1].textContent}","${aportacionValue}","${cells[3].textContent.replace('$','').replace(/,/g,'')}","${cells[4].textContent.replace('$','').replace(/,/g,'')}"\n`;
       });
       
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
