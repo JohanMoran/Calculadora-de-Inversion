@@ -245,7 +245,7 @@
   <label>Tasa Anual (%):</label>
   <div class="input-container">
     <input type="number" id="tasa" step="0.01" />
-    <span>Tasa de Interés anual, inversionistas conservadores (renta fija) 10% - 15%.</span>
+    <span>¿Cuál es la tasa de interés anual que te está proponiendo la institución financiera? </span>
   </div>
 
   <label>Plazo (en meses):</label>
@@ -278,7 +278,7 @@
     <span>Fecha en que tienes pensado dar inicio a tu inversión</span>
   </div>
 
-  <label>Capital objetivo (opcional):</label>
+  <label>Capital objetivo (OPCIONAL):</label>
   <div class="input-container">
     <input type="number" id="capitalObjetivo" placeholder="Ej: 500000" />
     <span>¿Ya tienes un objetivo (ir de viaje, comprar un auto, etc.)? Elige un monto con el que alcanzarás ese objetivo</span>
