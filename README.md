@@ -7,6 +7,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
   <style>
+          * === SOLUCIÓN: Oculta el título automático de GitHub Pages === */
+          .pagehead, .gh-header, .repohead, .Header { display: none !important; }
     :root {
       --fondo-claro: #f4f6f8;
       --texto-claro: #333;
