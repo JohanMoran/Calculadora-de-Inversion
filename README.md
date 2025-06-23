@@ -230,7 +230,7 @@
 </head>
 <body>
   <div id="portada">
-    <img src="https://raw.githubusercontent.com/JohanMoran/Proyeccion-de-Inversiones/main/Johan_Moran.PNG" 
+    <img src="https://raw.githubusercontent.com/JohanMoran/Calculadora-de-Inversion/main/Johan_Moran.PNG" 
          alt="Calculadora de Inversión"
          style="width: 100%; max-width: 900px; height: auto; border-radius: 8px;">
   </div>
