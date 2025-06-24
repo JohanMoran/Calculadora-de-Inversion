@@ -7,6 +7,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
   <style>
+          * === SOLUCIÓN: Oculta el título automático de GitHub Pages === */
+          .pagehead, .gh-header, .repohead, .Header { display: none !important; }
     :root {
       --fondo-claro: #f4f6f8;
       --texto-claro: #333;
@@ -14,7 +16,7 @@
       --hover: #1b4d5b;
       --tabla-head: #ddeeee;
       --boton-texto: #fff;
-      --portada: #2b2929;
+      --portada: #2e3552;
       --verde: #28a745;
       --verde-hover: #218838;
       --texto-grande: 16px;
@@ -206,10 +208,6 @@
       color: #e0e0e0;
       border: 1px solid #555;
     }
-    input[type="text"] {
-      text-align: right;
-      font-family: monospace;
-    }
 
     /* Ajustes específicos para móvil */
     @media (max-width: 768px) {
@@ -242,7 +240,7 @@
 
   <label>MONTO INICIAL:</label>
   <div class="input-container">
-    <input type="text" id="capitalInicial" oninput="formatCurrencyInput(this)" />
+    <input type="text" id="capitalInicial" />
     <span>¿Con qué cantidad cuentas en este momento? ¿Con cuánto empezarás tu inversión?</span>
   </div>
 
@@ -260,7 +258,7 @@
 
   <label>Aportación:</label>
   <div class="input-container">
-    <input type="text" id="aportacion" oninput="formatCurrencyInput(this)" />
+    <input type="text" id="aportacion" />
     <span>¿Cuánto puedes destinar a tu inversión periódicamente para incrementar tus rendimientos?</span>
   </div>
 
@@ -284,7 +282,7 @@
 
   <label>Capital objetivo (opcional):</label>
   <div class="input-container">
-    <input type="text" id="capitalObjetivo" oninput="formatCurrencyInput(this)" placeholder="Ej: 500000" />
+    <input type="number" id="capitalObjetivo" placeholder="Ej: 500000" />
     <span>¿Ya tienes un objetivo (ir de viaje, comprar un auto, etc.)? Elige un monto con el que alcanzarás ese objetivo</span>
   </div>
 
@@ -330,36 +328,52 @@
       }
     }
 
-    function formatCurrencyInput(input) {
+    // Función para formatear con $ mientras se escribe
+    function formatearMoneda(input) {
+      // Guardar posición del cursor
+      const cursorPosition = input.selectionStart;
+      
       // Eliminar todos los caracteres no numéricos excepto el punto decimal
-      let value = input.value.replace(/[^0-9.]/g, '');
+      let valor = input.value.replace(/[^0-9.]/g, '');
       
-      // Separar parte entera y decimal
-      let parts = value.split('.');
-      let integerPart = parts[0];
-      let decimalPart = parts.length > 1 ? '.' + parts[1] : '';
-      
-      // Formatear parte entera con comas
-      if (integerPart.length > 0) {
-        integerPart = parseInt(integerPart, 10).toLocaleString('es-MX');
+      // Si está vacío, dejar vacío
+      if(valor === '') {
+        input.value = '';
+        return;
       }
       
-      // Combinar y actualizar el valor
-      input.value = integerPart + decimalPart;
+      // Convertir a número y formatear
+      const numero = parseFloat(valor);
+      if (isNaN(numero)) {
+        input.value = '';
+        return;
+      }
+      
+      // Formatear con $ y separadores de miles
+      input.value = '$' + new Intl.NumberFormat('es-MX').format(numero);
+      
+      // Restaurar posición del cursor, ajustando por los caracteres añadidos
+      const newCursorPosition = cursorPosition + (input.value.length - valor.length);
+      input.setSelectionRange(newCursorPosition, newCursorPosition);
     }
 
-    function parseCurrencyInput(value) {
-      // Convertir el valor formateado a número para los cálculos
-      return parseFloat(value.replace(/,/g, '')) || 0;
-    }
+    // Asignar eventos a los inputs monetarios
+    document.getElementById('capitalInicial').addEventListener('input', function() {
+      formatearMoneda(this);
+    });
+    
+    document.getElementById('aportacion').addEventListener('input', function() {
+      formatearMoneda(this);
+    });
 
     function calcular() {
-      const capitalInicial = parseCurrencyInput(document.getElementById('capitalInicial').value);
+      // Limpiar el $ para los cálculos
+      const capitalInicial = parseFloat(document.getElementById('capitalInicial').value.replace(/[^0-9.]/g, '')) || 0;
       const tasa = parseFloat(document.getElementById('tasa').value) || 0;
       const plazo = parseInt(document.getElementById('plazo').value) || 0;
-      const aportacion = parseCurrencyInput(document.getElementById('aportacion').value);
+      const aportacion = parseFloat(document.getElementById('aportacion').value.replace(/[^0-9.]/g, '')) || 0;
       const periodicidad = parseInt(document.getElementById('periodicidad').value) || 1;
-      const capitalObjetivo = parseCurrencyInput(document.getElementById('capitalObjetivo').value) || null;
+      const capitalObjetivo = parseFloat(document.getElementById('capitalObjetivo').value) || null;
       const fechaInicio = new Date(document.getElementById('fechaInicio').value);
 
       if (plazo <= 0 || tasa <= 0) {
@@ -552,10 +566,10 @@
       doc.rect(20, 25, 170, 30, 'F');
       doc.text("Datos de la inversión", 25, 30);
       
-      const capitalInicial = parseCurrencyInput(document.getElementById('capitalInicial').value);
+      const capitalInicial = parseFloat(document.getElementById('capitalInicial').value.replace(/[^0-9.]/g, '')) || 0;
       const tasa = parseFloat(document.getElementById('tasa').value) || 0;
       const plazo = parseInt(document.getElementById('plazo').value) || 0;
-      const aportacion = parseCurrencyInput(document.getElementById('aportacion').value);
+      const aportacion = parseFloat(document.getElementById('aportacion').value.replace(/[^0-9.]/g, '')) || 0;
       const periodicidad = parseInt(document.getElementById('periodicidad').value) || 1;
       
       let periodicidadTexto = '';
@@ -625,8 +639,8 @@
       
       rows.forEach(row => {
         const cells = row.querySelectorAll('td');
-        const aportacionValue = cells[2].textContent === '$0.00' ? '0' : parseCurrencyInput(cells[2].textContent);
-        csv += `"${cells[0].textContent}","${cells[1].textContent}","${aportacionValue}","${cells[3].textContent.replace('$','').replace(/,/g,'')}","${cells[4].textContent.replace('$','').replace(/,/g,'')}"\n`;
+        const aportacionValue = cells[2].textContent === '$0.00' ? '0' : cells[2].textContent.replace(/[^0-9.]/g, '');
+        csv += `"${cells[0].textContent}","${cells[1].textContent}","${aportacionValue}","${cells[3].textContent.replace(/[^0-9.]/g, '')}","${cells[4].textContent.replace(/[^0-9.]/g, '')}"\n`;
       });
       
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
