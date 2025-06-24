@@ -238,7 +238,7 @@
   </div>
   <button class="dark-mode-btn" onclick="toggleDarkMode()">🌙 Modo Oscuro</button>
 
-  <label>MONTO INICIAL:</label>
+  <label>Monto Inicial:</label>
   <div class="input-container">
     <input type="text" id="capitalInicial" />
     <span>¿Con qué cantidad cuentas en este momento? ¿Con cuánto empezarás tu inversión?</span>
