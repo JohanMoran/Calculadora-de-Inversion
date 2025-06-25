@@ -6,6 +6,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
           * === SOLUCIÓN: Oculta el título automático de GitHub Pages === */
           .pagehead, .gh-header, .repohead, .Header { display: none !important; }
@@ -35,6 +36,7 @@
       max-width: 900px;
       margin: auto;
       transition: background-color 0.4s, color 0.4s;
+      position: relative;
     }
     #portada {
       background-color: var(--portada);
@@ -162,11 +164,14 @@
       margin-top: 15px;
     }
     .dark-mode-btn {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
+      position: absolute;
+      top: 30px;
+      right: 30px;
       z-index: 999;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      background-color: var(--primario);
+      padding: 8px 12px;
+      border-radius: 20px;
     }
     .leyenda {
       font-size: 14px;
@@ -209,6 +214,33 @@
       border: 1px solid #555;
     }
 
+    /* === Nuevo botón de WhatsApp === */
+    .whatsapp-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      z-index: 999;
+      background-color: #25D366;
+      color: white;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      transition: all 0.3s;
+    }
+
+    .whatsapp-btn:hover {
+      background-color: #128C7E;
+      transform: scale(1.1);
+    }
+
+    .whatsapp-btn i {
+      font-size: 30px;
+    }
+
     /* Ajustes específicos para móvil */
     @media (max-width: 768px) {
       .input-container {
@@ -227,16 +259,29 @@
       #portada {
         min-height: 100px;
       }
+      .dark-mode-btn {
+        top: 15px;
+        right: 15px;
+        padding: 6px 10px;
+        font-size: 12px;
+      }
+      .whatsapp-btn {
+        width: 50px;
+        height: 50px;
+        bottom: 20px;
+        right: 20px;
+      }
     }
   </style>
 </head>
 <body>
+  <button class="dark-mode-btn" onclick="toggleDarkMode()">🌙 Modo Oscuro</button>
+
   <div id="portada">
     <img src="https://raw.githubusercontent.com/JohanMoran/Calculadora-de-Inversion/main/Johan_Moran.PNG" 
          alt="Calculadora de Inversión"
          style="width: 100%; max-width: 900px; height: auto; border-radius: 8px;">
   </div>
-  <button class="dark-mode-btn" onclick="toggleDarkMode()">🌙 Modo Oscuro</button>
 
   <label>Monto Inicial:</label>
   <div class="input-container">
@@ -247,7 +292,7 @@
   <label>Tasa Anual (%):</label>
   <div class="input-container">
     <input type="number" id="tasa" step="0.01" />
-    <span>¿Cuál es la tasa de rendimiento anual que te está ofreciendo la institución financiera?</span>
+    <span>¿Cuánto puedes destinar a tu inversión periódicamente para incrementar tus rendimientos</span>
   </div>
 
   <label>Plazo (en meses):</label>
@@ -315,6 +360,11 @@
       <tbody></tbody>
     </table>
   </div>
+
+  <!-- Botón flotante de WhatsApp -->
+  <a href="https://wa.me/523318853923" class="whatsapp-btn" target="_blank" title="Contactar por WhatsApp">
+    <i class="fab fa-whatsapp"></i>
+  </a>
 
   <script>
     let datosGrafica = [];
