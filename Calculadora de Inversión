@@ -292,7 +292,7 @@
   <label>Tasa Anual (%):</label>
   <div class="input-container">
     <input type="number" id="tasa" step="0.01" />
-    <span>¿Cuánto puedes destinar a tu inversión periódicamente para incrementar tus rendimientos</span>
+    <span>¿Cuál es la tasa de rendimiento anual que te está ofreciendo la institución financiera?</span>
   </div>
 
   <label>Plazo (en meses):</label>
@@ -362,7 +362,7 @@
   </div>
 
   <!-- Botón flotante de WhatsApp -->
-  <a href="https://wa.me/523318853923?text=Hola,%20me%20interesa%20saber%20más%20sobre%20inversiones%20" class="whatsapp-btn" target="_blank" title="Contactar por WhatsApp">
+  <a href="https://wa.me/523318853923?text=Hola,%20me%20interesa%20saber%20más%20sobre%20inversiones%20💰📈" class="whatsapp-btn" target="_blank" title="Contactar por WhatsApp">
     <i class="fab fa-whatsapp"></i>
   </a>
 
