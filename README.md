@@ -120,7 +120,7 @@
       transform: translateY(-2px);
     }
 
-    /* Resto del CSS... (mantén todo el CSS anterior que ya tenías) */
+    /* Estilos mejorados para tooltips */
     .tooltip-container {
       position: relative;
       display: inline-block;
@@ -131,6 +131,7 @@
       color: var(--primario);
       cursor: help;
       font-size: 0.9rem;
+      touch-action: manipulation;
     }
     
     .tooltip-text {
@@ -138,11 +139,11 @@
       width: 200px;
       background-color: var(--primario);
       color: white;
-      text-align: center;
+      text-align: left;
       border-radius: 6px;
-      padding: 8px;
+      padding: 10px;
       position: absolute;
-      z-index: 1;
+      z-index: 1000;
       bottom: 125%;
       left: 50%;
       transform: translateX(-50%);
@@ -150,12 +151,45 @@
       transition: opacity 0.3s;
       font-size: 0.8rem;
       font-weight: normal;
-      font-style: normal;
+      line-height: 1.4;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      word-wrap: break-word;
+      white-space: normal;
     }
     
-    .tooltip-container:hover .tooltip-text {
+    body.dark .tooltip-text {
+      background-color: var(--secundario);
+    }
+    
+    .tooltip-container:hover .tooltip-text,
+    .tooltip-container:focus .tooltip-text {
       visibility: visible;
       opacity: 1;
+    }
+
+    /* Estilos específicos para tooltips en móviles */
+    @media (max-width: 768px) {
+      .tooltip-text {
+        width: 180px;
+        font-size: 0.75rem;
+        bottom: auto;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        margin-top: 8px;
+        max-width: 80vw;
+      }
+      
+      .tooltip-container .tooltip-text.right {
+        left: auto;
+        right: 0;
+        transform: none;
+      }
+      
+      .tooltip-container .tooltip-text.left {
+        left: 0;
+        transform: none;
+      }
     }
   
     .calculadora-grid {
@@ -609,7 +643,7 @@
       }
       
       #tablaResultados {
-        min-width: 600px; /* Ancho mínimo para mantener legibilidad */
+        min-width: 600px;
       }
       
       /* Ajuste para el gráfico */
@@ -627,7 +661,7 @@
       /* Ajuste para inputs */
       .input-group input, 
       .input-group select {
-        font-size: 16px; /* Mejor legibilidad en móviles */
+        font-size: 16px;
         padding: 12px;
       }
       
@@ -681,12 +715,6 @@
       /* Ajustar tamaño de fuente en inputs */
       input, select {
         font-size: 14px;
-      }
-      
-      /* Mejorar visualización de tooltips */
-      .tooltip-text {
-        width: 150px;
-        font-size: 0.7rem;
       }
     }
 
@@ -996,7 +1024,7 @@
   </div>
 
   <!-- Botón flotante de WhatsApp -->
-  <a href="https://wa.me/523324967419?text=Hola,%20me%20interesa%20saber%20m%C3%A1s%20sobre%20inversiones%20%F0%9F%92%B0%F0%9F%93%88" class="whatsapp-btn" target="_blank" title="Contactar por WhatsApp">
+  <a href="https://wa.me/523318853923text=Hola,%20me%20interesa%20saber%20m%C3%A1s%20sobre%20inversiones%20%F0%9F%92%B0%F0%9F%93%88" class="whatsapp-btn" target="_blank" title="Contactar por WhatsApp">
     <i class="fab fa-whatsapp"></i>
   </a>
 
@@ -1066,6 +1094,61 @@
           button.classList.toggle('active');
           answer.classList.toggle('show');
         });
+      });
+
+      // Configurar tooltips para móviles
+      const tooltips = document.querySelectorAll('.tooltip-container');
+      
+      tooltips.forEach(tooltip => {
+        // Manejar clicks en móviles
+        tooltip.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          const tooltipText = this.querySelector('.tooltip-text');
+          const allTooltips = document.querySelectorAll('.tooltip-text');
+          
+          // Cerrar otros tooltips abiertos
+          allTooltips.forEach(tt => {
+            if (tt !== tooltipText) {
+              tt.style.visibility = 'hidden';
+              tt.style.opacity = '0';
+            }
+          });
+          
+          // Alternar este tooltip
+          if (tooltipText.style.visibility === 'visible') {
+            tooltipText.style.visibility = 'hidden';
+            tooltipText.style.opacity = '0';
+          } else {
+            // Ajustar posición si no cabe
+            tooltipText.style.visibility = 'visible';
+            tooltipText.style.opacity = '1';
+            
+            // Verificar posición después de mostrarlo
+            setTimeout(() => {
+              const rect = tooltipText.getBoundingClientRect();
+              
+              if (rect.bottom > window.innerHeight) {
+                tooltipText.classList.add('right');
+              } else if (rect.left < 0) {
+                tooltipText.classList.add('left');
+              } else {
+                tooltipText.classList.remove('right', 'left');
+              }
+            }, 10);
+          }
+        });
+      });
+      
+      // Cerrar tooltips al tocar fuera
+      document.addEventListener('click', function(e) {
+        if (!e.target.closest('.tooltip-container')) {
+          const allTooltips = document.querySelectorAll('.tooltip-text');
+          allTooltips.forEach(tt => {
+            tt.style.visibility = 'hidden';
+            tt.style.opacity = '0';
+          });
+        }
       });
 
       // Ajustar tabla para móviles
