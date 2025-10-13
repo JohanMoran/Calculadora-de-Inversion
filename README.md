@@ -1058,7 +1058,7 @@
     let totalAportaciones = 0;
     let totalInteres = 0;
     let capital = 0;
-    const MAX_PERIODOS_TABLA = 60; // Mostrar máximo 5 años en meses
+    const MAX_PERIODOS_TABLA = 100; // Mostrar máximo 5 años en meses
 
     // Inicialización
     document.addEventListener('DOMContentLoaded', function() {
