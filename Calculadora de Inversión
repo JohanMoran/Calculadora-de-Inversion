@@ -261,6 +261,11 @@
       -webkit-appearance: none;
     }
   
+    /* Estilo específico para inputs monetarios */
+    input[type="text"] {
+      -moz-appearance: textfield;
+    }
+  
     body.dark input,
     body.dark select {
       background-color: #2a2a2a;
@@ -773,7 +778,8 @@
           </div>
         </h3>
         <div class="input-group">
-          <input type="text" id="capitalInicial" placeholder="$0">
+          <!-- Cambiado a type="text" para formato de moneda -->
+          <input type="text" id="capitalInicial" placeholder="$0" inputmode="numeric">
         </div>
         <div class="input-group">
           <label for="tasa">Tasa de interés anual (%):
@@ -795,19 +801,21 @@
         </h3>
         <div class="input-group">
           <label for="tipoPlazo">Tipo de plazo:</label>
+          <!-- Cambiado: sin opción seleccionada por defecto -->
           <select id="tipoPlazo">
+            <option value="" disabled selected>Selecciona un tipo de plazo</option>
             <option value="mensual">Periodo en Meses</option>
             <option value="anual">Periodo en Años</option>
           </select>
         </div>
         <div class="input-group">
-          <label id="labelPlazo" for="plazo">Cantidad de años:
+          <label id="labelPlazo" for="plazo">Cantidad:
             <div class="tooltip-container">
               <i class="fas fa-question-circle tooltip-icon"></i>
               <span class="tooltip-text">Horizonte de tiempo para tu inversión</span>
             </div>
           </label>
-          <input type="number" id="plazo" min="1" placeholder="0">
+          <input type="number" id="plazo" min="1" placeholder="0" disabled>
         </div>
         <div class="input-group">
           <label for="frecuencia">Frecuencia de capitalización:
@@ -839,7 +847,8 @@
               <span class="tooltip-text">Cantidad que aportarás periódicamente</span>
             </div>
           </label>
-          <input type="text" id="aportacion" placeholder="$0">
+          <!-- Cambiado a type="text" para formato de moneda -->
+          <input type="text" id="aportacion" placeholder="$0" inputmode="numeric">
         </div>
         <div class="input-group">
           <label for="frecuenciaAportacion">Frecuencia de aportación:
@@ -1002,7 +1011,7 @@
         <button class="faq-question">¿Cómo funcionan las aportaciones adicionales?</button>
         <div class="faq-answer">
           <p>Son aportaciones adicionales al capital inicial. La frecuencia de estos depósitos será la misma que la que elijas en "Frecuencia anual de interés compuesto".
-             Por ejemplo, si decides hacer depósitos adicionales de $100 y seleccionas una frecuencia mensual, estarás agregando $100 cada mes a tu inversión.:</p>
+             Por ejemplo, si decides hacer depósitos adicionales de $100 y seleccionas una frecuencia mensual, estarás agregando $100 cada mes a tu inversión:</p>
           
           <div class="table-wrapper" style="margin-top: 15px;">
             <table style="width: 100%; border-collapse: collapse;">
@@ -1067,7 +1076,7 @@
         input.addEventListener('input', calcular);
       });
 
-      // Configura formateo de moneda
+      // Configura formateo de moneda para depósito inicial y aportaciones
       document.getElementById('capitalInicial').addEventListener('input', function() {
         formatearMoneda(this);
       });
@@ -1076,26 +1085,34 @@
         formatearMoneda(this);
       });
 
-      // Cambiar label de plazo según selección
+      // Cambiar label de plazo según selección y habilitar/deshabilitar input
       document.getElementById('tipoPlazo').addEventListener('change', function() {
         const labelPlazo = document.getElementById('labelPlazo');
+        const plazoInput = document.getElementById('plazo');
         const tooltip = labelPlazo.querySelector('.tooltip-text');
         
-        if (this.value === 'mensual') {
-          labelPlazo.textContent = 'Cantidad de meses:';
-          tooltip.textContent = '¿Cuántos meses vas a realizar la inversión?';
-          document.getElementById('plazo').placeholder = '0';
+        if (this.value) {
+          plazoInput.disabled = false;
+          
+          if (this.value === 'mensual') {
+            labelPlazo.innerHTML = 'Cantidad de meses:' + 
+              `<div class="tooltip-container">
+                <i class="fas fa-question-circle tooltip-icon"></i>
+                <span class="tooltip-text">¿Cuántos meses vas a realizar la inversión?</span>
+              </div>`;
+            plazoInput.placeholder = '0';
+          } else {
+            labelPlazo.innerHTML = 'Cantidad de años:' + 
+              `<div class="tooltip-container">
+                <i class="fas fa-question-circle tooltip-icon"></i>
+                <span class="tooltip-text">¿Cuántos años vas a realizar la inversión?</span>
+              </div>`;
+            plazoInput.placeholder = '0';
+          }
         } else {
-          labelPlazo.textContent = 'Cantidad de años:';
-          tooltip.textContent = '¿Cuántos años vas a realizar la inversión?';
-          document.getElementById('plazo').placeholder = '0';
+          plazoInput.disabled = true;
+          plazoInput.value = '';
         }
-        
-        // Asegurarse de mantener el icono de tooltip
-        labelPlazo.innerHTML = labelPlazo.textContent + `<div class="tooltip-container">
-          <i class="fas fa-question-circle tooltip-icon"></i>
-          <span class="tooltip-text">${tooltip.textContent}</span>
-        </div>`;
         
         calcular();
       });
@@ -1250,6 +1267,11 @@
         return;
       }
       
+      if (!tipoPlazo) {
+        mostrarError('tipoPlazo', 'Debes seleccionar un tipo de plazo');
+        return;
+      }
+      
       if (plazo <= 0) {
         mostrarError('plazo', 'El plazo debe ser mayor a cero');
         return;
@@ -1361,11 +1383,19 @@
         }
         
         resultados = resultados.slice(0, MAX_PERIODOS_TABLA);
+      } else {
+        // Eliminar warning si existe y ya no es necesario
+        const existingWarning = document.querySelector('.warning-message');
+        if (existingWarning) {
+          existingWarning.remove();
+        }
       }
 
       // Generar gráfico y tabla
-      generarGraficoBarras(resultados, labels);
-      generarTabla(resultados, tipoPlazo === 'mensual');
+      if (periodos > 0) {
+        generarGraficoBarras(resultados, labels);
+        generarTabla(resultados, tipoPlazo === 'mensual');
+      }
     }
 
     function mostrarError(inputId, mensaje) {
@@ -1388,7 +1418,7 @@
         chartBarras.destroy();
       }
       
-      // Preparar datos para el gráfico (modificado para mostrar depósito inicial en todos los periodos)
+      // Preparar datos para el gráfico
       const datosInicial = datos.map(() => datos[0].capitalInicial);
       
       // Calcular valores acumulativos para aportaciones e intereses
@@ -1604,7 +1634,7 @@
       }).format(value);
     }
 
-    // Función para exportar a PDF
+    // Función para exportar a PDF (se mantiene igual)
     async function exportToPDF() {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF({
@@ -1832,7 +1862,7 @@
       doc.save(`Reporte_Financiero_${new Date().toISOString().slice(0,10)}.pdf`);
     }
 
-    // Función para exportar a Excel
+    // Función para exportar a Excel (se mantiene igual)
     function exportToExcel() {
       // Preparar datos
       const wb = XLSX.utils.book_new();
